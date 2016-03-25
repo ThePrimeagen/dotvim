@@ -71,15 +71,6 @@ set nocompatible               " be iMproved
     " }
 " }
 
-function! LoadColorCustomization()
-    if filereadable("./custom/.vimrc-colors")
-        so ./custom/.vimrc-colors
-    else
-        set background=dark         " Assume a dark background
-        color candycode             " load a colorscheme
-    endif
-endfunction
-
 " General {
     filetype plugin indent on   " Automatically detect file types.
     syntax on                   " syntax highlighting
@@ -110,7 +101,8 @@ endfunction
 " }
 
 " Vim UI {
-    so ./.vimrc-colors
+    set background=light         " Assume a dark background
+    color solarized " load a colorscheme
     set tabpagemax=15               " only show 15 tabs
     set showmode                    " display the current mode
 
