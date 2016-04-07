@@ -61,6 +61,7 @@ set nocompatible               " be iMproved
         Plugin 'tfnico/vim-gradle'
         Plugin 'shime/vim-livedown'
         Plugin 'heavenshell/vim-jsdoc'
+        Plugin 'Yggdroot/indentLine'
         "Plugin 'myusuf3/numbers.vim'
         if executable('ctags')
             Plugin 'majutsushi/tagbar'
@@ -83,7 +84,7 @@ set nocompatible               " be iMproved
     "set shortmess+=filmnrxoOtT      " abbrev. of messages (avoids 'hit enter')
     "set viewoptions=folds,options,cursor,unix,slash " better unix / windows compatibility
     set virtualedit=onemore         " allow for cursor beyond last character
-    set history=1000                " Store a ton of history (default is 20)
+    set history=5000                " Store a ton of history (default is 20)
     set nospell                       " spell checking off
     set hidden                      " allow buffer switching without saving
 
@@ -105,7 +106,6 @@ set nocompatible               " be iMproved
     color solarized " load a colorscheme
     set tabpagemax=15               " only show 15 tabs
     set showmode                    " display the current mode
-
     set cursorline                  " highlight current line
 
     if has('cmdline_info')
@@ -278,8 +278,21 @@ set nocompatible               " be iMproved
       let NERDTreeShowHidden=1
       let NERDTreeKeepTreeInNewTab=1
   " }
-  " Ack {
-      let g:ackprg = 'ag --nogroup --nocolor --column'
+  " Ack (The Silver Searcher) {
+  if executable('ag')
+      " Use ag over grep
+      set grepprg=ag\ --nogroup\ --nocolor
+
+      " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+      let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+      " ag is fast enough that CtrlP doesn't need to cache
+      let g:ctrlp_use_caching = 0
+      " bind K to grep word under cursor
+      nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+      command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+      nnoremap \ :Ag<SPACE>
+  endif
   " }
 
   " syntastic settings {
@@ -448,3 +461,12 @@ function! InitializeDirectories()
     endfor
 endfunction
 call InitializeDirectories()
+
+
+" Word wrapping {
+    set formatoptions-=t
+    set textwidth=0
+    set wrapmargin=0
+    set nowrap
+    echo "word wrapping is turned off."
+" }
